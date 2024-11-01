@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Stylizer</title>
+</head>
+<body>
+    <h1>Upload Images and Enter Style Prompt</h1>
+    <form id="image-form">
+        <input type="file" id="image-input" accept="image/*"><br><br>
+        <input type="text" id="style-prompt" placeholder="Enter style prompt"><br><br>
+        <button type="button" onclick="stylizeImages()">Stylize Images</button>
+    </form>
+
+    <div id="response"></div>
+
+    <script>
+        function stylizeImages() {
+            const imageInput = document.getElementById('image-input');
+            const promptInput = document.getElementById('style-prompt');
+            const responseDiv = document.getElementById('response');
+
+            if (!imageInput.files.length || !promptInput.value.trim()) {
+                alert('Please upload an image and enter a style prompt.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', imageInput.files[0]);
+            formData.append('prompt', promptInput.value);
+
+            fetch('/stylize', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                responseDiv.innerText = data.message;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                responseDiv.innerText = 'An error occurred while processing the image.';
+            });
+        }
+    </script>
+</body>
+          </html>
